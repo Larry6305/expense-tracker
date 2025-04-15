@@ -1,34 +1,44 @@
-import React from 'react';
-
-function ExpenseTable({ expenses, deleteExpense }) {
-  return (
-    <table>
-      <thead>
-        <tr>
-          <th>Expense Name</th>
-          <th>Description</th>
-          <th>Amount</th>
-          <th>Category</th>
-          <th>Date</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {expenses.map((expense) => (
-          <tr key={expense.id}>
-            <td>{expense.expenseName}</td>
-            <td>{expense.description}</td>
-            <td>{expense.amount}</td>
-            <td>{expense.category}</td>
-            <td>{expense.date}</td>
-            <td>
-              <button onClick={() => deleteExpense(expense.id)}>Delete</button>
-            </td>
+function ExpenseTable({ expenses, onDelete, onSort, sortField, sortOrder }) {
+    const handleSortClick = (field) => {
+      onSort(field);
+    };
+  
+    return (
+      <table className="expense-table">
+        <thead>
+          <tr>
+            <th onClick={() => handleSortClick('description')}>
+              Description {sortField === 'description' && (sortOrder === 'asc' ? '↑' : '↓')}
+            </th>
+            <th>Amount</th>
+            <th onClick={() => handleSortClick('category')}>
+              Category {sortField === 'category' && (sortOrder === 'asc' ? '↑' : '↓')}
+            </th>
+            <th>Actions</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
-export default ExpenseTable;
+        </thead>
+        <tbody>
+          {expenses.length === 0 ? (
+            <tr>
+              <td colSpan="4">No expenses found.</td>
+            </tr>
+          ) : (
+            expenses.map((expense) => (
+              <tr key={expense.id}>
+                <td>{expense.description}</td>
+                <td>${expense.amount.toFixed(2)}</td>
+                <td>{expense.category}</td>
+                <td>
+                  <button onClick={() => onDelete(expense.id)}>Delete</button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    );
+  }
+  
+  export default ExpenseTable;
+  
+  
